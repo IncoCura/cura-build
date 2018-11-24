@@ -41,8 +41,8 @@ GetFromEnvironmentOrCache(EXTRA_REPOSITORIES "" STRING "Extra repositories to in
 
 # Create the version-related variables
 GetFromEnvironmentOrCache(CURA_VERSION_MAJOR "1" STRING "Cura Major Version")
-GetFromEnvironmentOrCache(CURA_VERSION_MINOR "0" STRING "Cura Minor Version")
-GetFromEnvironmentOrCache(CURA_VERSION_PATCH "1" STRING "Cura Patch Version")
+GetFromEnvironmentOrCache(CURA_VERSION_MINOR "1" STRING "Cura Minor Version")
+GetFromEnvironmentOrCache(CURA_VERSION_PATCH "0" STRING "Cura Patch Version")
 GetFromEnvironmentOrCache(CURA_VERSION_EXTRA "${TAG_OR_BRANCH}" STRING "Cura Extra Version Information")
 
 GetFromEnvironmentOrCache(CURA_EXTRA_PROJECTS_DIR "" STRING "Directory where extra projects to build are located.")
