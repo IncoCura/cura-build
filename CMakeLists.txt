@@ -51,7 +51,7 @@ set(CURA_VERSION "${CURA_VERSION_MAJOR}.${CURA_VERSION_MINOR}.${CURA_VERSION_PAT
 if(NOT "${CURA_VERSION_EXTRA}" STREQUAL "")
     set(CURA_VERSION "${CURA_VERSION}-${CURA_VERSION_EXTRA}")
 endif()
-set(CURA_SDK_VERSION "5.0.0")
+set(CURA_SDK_VERSION "6.0.0")
 
 # Build projects step
 add_custom_target(projects ALL COMMENT "Building Projects...")
