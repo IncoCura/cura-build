@@ -30,3 +30,9 @@ export CXXFLAGS="-stdlib=libc++"
 
 export CC="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 export CXX="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+
+rm -rf build
+mkdir build
+cd build
+cmake .. -DCMAKE_PREFIX_PATH=/Users/kangdroid/Desktop/prog/Cura/curadep
+make -j12
