@@ -4,6 +4,12 @@ cmake_minimum_required(VERSION 3.6)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+option(BUILD_OFFLINE "Build offline (use target 'update' to update sources)." OFF)
+
+if(BUILD_OFFLINE)
+    set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED 1)
+endif()
+
 include(ExternalProject)
 include(GNUInstallDirs)
 
@@ -15,15 +21,24 @@ include(SetProjectDependencies)
 option(BUILD_PACKAGE "Create a package with the build of Cura" ON)
 option(SIGN_PACKAGE "Perform signing of the created package. Implies BUILD_PACKAGE" OFF)
 
+set(CURA_BUILDTYPE          "" CACHE STRING "Build type of Cura, eg. 'testing'")
+set(CURA_NO_INSTALL_PLUGINS "" CACHE STRING "A list of plugins to exclude from installation, should be separated by ';'.")
+set(CURA_MSI_PRODUCT_GUID   "" CACHE STRING "The Product GUID for Cura MSI")
+set(CURA_MSI_UPGRADE_GUID   "" CACHE STRING "The Upgrade GUID for Cura MSI")
+
+# Cura MSI product GUID and upgrade GUID
+if(BUILD_PACKAGE)
+    if(NOT DEFINED CURA_MSI_PRODUCT_GUID)
+        message(STATUS "CURA_MSI_PRODUCT_GUID must be provided.")
+    endif()
+    if(NOT DEFINED CURA_MSI_UPGRADE_GUID)
+        message(STATUS "CURA_MSI_UPGRADE_GUID must be provided.")
+    endif()
+endif()
+
 if(SIGN_PACKAGE)
     set(BUILD_PACKAGE ON)
 endif()
-
-# This should care that our CMAKE_PREFIX_PATH is absolute at the end...
-get_filename_component(CMAKE_PREFIX_PATH
-                       ${CMAKE_PREFIX_PATH}
-                       ABSOLUTE
-                       CACHE FORCE)
 
 set(EXTERNALPROJECT_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/inst)
 
@@ -36,7 +51,6 @@ GetFromEnvironmentOrCache(LIBCHARON_BRANCH_OR_TAG "master" STRING "The name of t
 
 GetFromEnvironmentOrCache(CURAENGINE_ENABLE_MORE_COMPILER_OPTIMIZATION_FLAGS "ON" STRING "Whether to enable extra compiler optimization flags for CuraEngine")
 
-GetFromEnvironmentOrCache(CURA_BUILD_NAME "master" STRING "The build name")
 GetFromEnvironmentOrCache(EXTRA_REPOSITORIES "" STRING "Extra repositories to install. Expected to have a CMake based build system. Format is (<project name> <git URL> <cmake configuration options>\;)*")
 
 # Create the version-related variables
@@ -61,6 +75,8 @@ if(NOT CURA_EXTRA_PROJECTS_DIR STREQUAL "")
     file(GLOB _extra_projects ${CURA_EXTRA_PROJECTS_DIR}/*.cmake)
     list(APPEND _projects ${_extra_projects})
 endif()
+
+add_custom_target(update COMMENT "Updating Projects...")
 
 foreach(_project ${_projects})
     # Go through all files in projects/ and include them. The project files should define
